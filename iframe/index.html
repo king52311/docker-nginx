@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    iframe {
+  overflow: hidden;
+  overflow-y: auto;
+}
+    iframe.no-scroll {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+</style>
+
+<script type="text/javascript">
+    
+    window.onload = function() {
+    var iframe = document.getElementById("myiframe"); 
+    iframe.style.height = '57rem'; 
+    iframe.style.width = '98rem'; 
+    iframe.onload = function() { 
+        setIframeHeight(iframe); 
+        setIframeWidth(iframe); 
+    }; 
+};
+    
+    
+</script>
+
+<iframe src="https://chatgpt-web-production-1fae.up.railway.app"  id="myiframe" class="no-scroll"></iframe>
+</body>
+</html>

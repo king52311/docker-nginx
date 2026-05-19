@@ -1,0 +1,8 @@
+        ssl_certificate      ssl/_.snuday.com-chain.pem;  #证书路径，支持 crt,pem 类型的证书，不支持 pfx 类型的证书
+        ssl_certificate_key  ssl/_.snuday.com-key.pem;         #证书key路径
+
+        ssl_session_cache    shared:SSL:1m;
+        ssl_session_timeout  5m;
+
+        ssl_ciphers  HIGH:!aNULL:!MD5;
+        ssl_prefer_server_ciphers  on;
