@@ -1,0 +1,18 @@
+    # 1. 开启零拷贝高效传输
+    sendfile            on;
+    tcp_nopush          on;
+    keepalive_timeout   65;
+
+    # 2. 开启 Gzip 网页压缩
+    gzip on;
+    gzip_min_length 1k;
+    gzip_comp_level 5;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+
+    
+    # 4. 静态资源浏览器强缓存 30 天（不记日志，省磁盘I/O）
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|woff|woff2|svg)$ {
+        expires 30d;
+        access_log off;
+        add_header Cache-Control "public, no-transform";
+    }

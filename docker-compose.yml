@@ -7,5 +7,6 @@ services:
             - './conf.d:/etc/nginx/conf.d'	# 配置文件映射
             - './ssl:/etc/nginx/ssl'			# 证书目录映射
             - './html:/usr/share/nginx/html'		# 页面目录映射（可选）
+            - '/home/docker:/home/docker'
         restart: always
         image: 'nginx'
