@@ -8,5 +8,6 @@ services:
             - './ssl:/etc/nginx/ssl'			# 证书目录映射
             - './html:/usr/share/nginx/html'		# 页面目录映射（可选）
             - '/home/docker:/home/docker'
+            - '/data:/data'
         restart: always
         image: 'nginx'
