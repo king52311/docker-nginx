@@ -1,0 +1,147 @@
+{
+  "findme-release-slot-a-1": {
+    "preserve_existing": true
+  },
+  "findme-release-transit-mcp-1": {
+    "preserve_existing": true
+  },
+  "findme-admin-release-slot-a-1": {
+    "preserve_existing": true
+  },
+  "findme-admin-release-slot-b-1": {
+    "preserve_existing": true
+  },
+  "findme-api-gateway": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "http",
+      "http://127.0.0.1:8200/api/health/db"
+    ]
+  },
+  "findme-admin-gateway": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "http",
+      "http://127.0.0.1:80/index.html"
+    ]
+  },
+  "redis": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "redis",
+      "127.0.0.1:6379"
+    ]
+  },
+  "mysql-server": {
+    "test": [
+      "CMD",
+      "mysqladmin",
+      "ping",
+      "--host=127.0.0.1",
+      "--silent"
+    ]
+  },
+  "pgsql-vector-server": {
+    "test": [
+      "CMD-SHELL",
+      "pg_isready -q -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""
+    ]
+  },
+  "phpmyadmin-web": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "http",
+      "http://127.0.0.1:80/"
+    ]
+  },
+  "pgadmin-web": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "http",
+      "http://127.0.0.1:80/misc/ping"
+    ]
+  },
+  "php-nginx-app": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "http",
+      "http://127.0.0.1:80/"
+    ]
+  },
+  "zblog_asp_app": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "tcp",
+      "127.0.0.1:8080"
+    ]
+  },
+  "lark_proxy_node": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "tcp",
+      "127.0.0.1:7890"
+    ]
+  },
+  "larkcron-web-automation": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "process",
+      "node scheduler.js"
+    ]
+  },
+  "frps-server": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "tcp",
+      "127.0.0.1:7070"
+    ]
+  },
+  "nginx": {
+    "test": [
+      "CMD-SHELL",
+      "nginx -t -q && curl --fail --silent --max-time 5 --output /dev/null http://127.0.0.1/"
+    ]
+  },
+  "portainer": {
+    "test": [
+      "CMD",
+      "/opt/container-health/probe",
+      "https-local",
+      "https://127.0.0.1:9443/api/system/status"
+    ]
+  },
+  "findme-release-cron-1": {
+    "test": [
+      "CMD",
+      "python",
+      "-c",
+      "import asyncio,pathlib; from sqlalchemy import text; from app.db.client import SessionLocal; assert any(b'app.scheduler_runner' in p.read_bytes().split(b'\\0') for p in pathlib.Path('/proc').glob('[0-9]*/cmdline')); exec(\"async def check():\\n async with SessionLocal() as db: assert await db.scalar(text('SELECT 1')) == 1\\n\"); asyncio.run(check())"
+    ]
+  },
+  "findme-release-ai-worker-1": {
+    "test": [
+      "CMD",
+      "python",
+      "-c",
+      "import asyncio,pathlib; from sqlalchemy import text; from app.db.client import SessionLocal; assert any(b'app.asset_ai_worker' in p.read_bytes().split(b'\\0') for p in pathlib.Path('/proc').glob('[0-9]*/cmdline')); exec(\"async def check():\\n async with SessionLocal() as db: assert await db.scalar(text('SELECT 1')) == 1\\n\"); asyncio.run(check())"
+    ]
+  },
+  "findme-release-code-mail-worker-1": {
+    "test": [
+      "CMD",
+      "python",
+      "-c",
+      "import asyncio,pathlib; from sqlalchemy import text; from app.db.client import SessionLocal; assert any(b'app.verification_code_worker' in p.read_bytes().split(b'\\0') for p in pathlib.Path('/proc').glob('[0-9]*/cmdline')); exec(\"async def check():\\n async with SessionLocal() as db: assert await db.scalar(text('SELECT 1')) == 1\\n\"); asyncio.run(check())"
+    ]
+  }
+}
