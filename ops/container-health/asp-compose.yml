@@ -1,0 +1,44 @@
+{
+  "services": {
+    "zblog-legacy": {
+      "image": "sha256:3ade828d95502638362394ad8a48f4ccc25ac1583419575ad29d0b61df2e5ca6",
+      "container_name": "zblog_asp_app",
+      "restart": "always",
+      "working_dir": "/app",
+      "command": [
+        "fastcgi-mono-server4",
+        "/applications=/:/app",
+        "/socket=tcp:0.0.0.0:8080",
+        "/compat=com"
+      ],
+      "ports": [
+        "82:8080"
+      ],
+      "volumes": [
+        "/home/docker/asp_snuday_com:/app",
+        "/data/docker-health/releases/d60ebf9e890ea3c8d27aff7e731324f610c090f6/probe-linux-amd64:/opt/container-health/probe:ro"
+      ],
+      "networks": [
+        "legacy"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "/opt/container-health/probe",
+          "tcp",
+          "127.0.0.1:8080"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "start_period": "30s",
+        "retries": 3
+      }
+    }
+  },
+  "networks": {
+    "legacy": {
+      "external": true,
+      "name": "asp_snuday_com_default"
+    }
+  }
+}

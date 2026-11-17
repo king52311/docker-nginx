@@ -21,10 +21,19 @@ python3 apply.py --binary /data/docker-health/releases/<commit>/probe-linux-amd6
 
 工具保留当前不可变镜像 ID、挂载源（包括匿名卷）、端口、资源限制、环境变量、网络别名、静态地址与重启策略。健康探针通过只读运行产物挂载注入；应用配置来自已推送 Git。重建时短暂停止旧容器，失败恢复；单实例数据库与代理安排维护窗口。通过后移除旧容器。原始 inspect 包含凭据，只保存在服务器 `/data/docker-health/backups/`（0700/0600），绝不提交 Git 或打印。
 
-Docker 原生健康检查每 30 秒执行，超时 10 秒，3 次失败标记 unhealthy；它不会自动重启不健康容器或发送通知。正常重启保留检查；FindMe 已在发布 Compose 直接保存网关/worker 检查，其余受管 Compose 项目新增 `docker-compose.override.yml`，默认重建自动保留；显式 `-f` 时须同时指定覆盖文件。Portainer 和原始部署目录已缺失的旧 ASP 容器由本工具管理，其手工重新创建后需重新运行 `apply.py --apply`。部署单由本工具维护，不能把此前遗留的线上运行配置差异当作本次业务源码发布。
+Docker 原生健康检查每 30 秒执行，超时 10 秒，3 次失败标记 unhealthy；它不会自动重启不健康容器或发送通知。正常重启保留检查；FindMe 已在发布 Compose 直接保存网关/worker 检查，其余受管 Compose 项目新增 `docker-compose.override.yml`，默认重建自动保留；显式 `-f` 时须同时指定覆盖文件。Portainer 和仅剩运行数据的旧 ASP 容器额外提供 `portainer-compose.yml`、`asp-compose.yml`，固定现有镜像 ID、挂载、端口及健康检查。未来重建使用这些声明；绕过声明手工创建的容器需重新应用检查。部署单由本工具维护，不能把此前遗留的线上运行配置差异当作本次业务源码发布。
 
 FindMe `.deploy/` 中入口/worker 容器 ID 是部署凭据。应用后必须根据经过健康验证的新容器更新对应 ID，镜像/提交标记保持。线上已有配置、证书和任务状态不覆盖，不触发业务镜像重建。
 
 ## 已验收
 
 2026-11-17：21/21 容器全部 running/healthy；17 项新增探针预检、3 项单元测试、真实 Docker 匿名卷保留/失败回退验证通过。17 个容器仅改健康配置，其不可变业务镜像 ID 和原挂载保留，原有 4 个健康容器保持。服务器 Nginx 的既有配置/证书差异已私有备份，未覆盖。验收 `/data/docker-health/acceptance-20261117.json`，私有回退记录 `/data/docker-health/backups/`。
+
+### Portainer / 旧 ASP 的部署声明
+
+```sh
+docker compose -p portainer -f ops/container-health/portainer-compose.yml up -d
+docker compose -p asp_snuday_com -f ops/container-health/asp-compose.yml up -d
+```
+
+这两份声明保留当前服务器已有的镜像 ID，需提前保有对应镜像；不在此任务重建未知来源的遗留业务镜像。Portainer 使用现有 external 数据卷与本机 9443 绑定，ASP 使用现有 external 网络和应用目录。现有运行容器已通过健康工具原地应用，此处为未来重建入口，未再次重启。

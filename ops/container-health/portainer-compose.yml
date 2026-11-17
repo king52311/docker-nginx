@@ -1,0 +1,35 @@
+{
+  "services": {
+    "portainer": {
+      "image": "sha256:e023829b601ccaa3a6921fa9b99d24ac60837caede772bcd0dc845f62cb84839",
+      "container_name": "portainer",
+      "restart": "always",
+      "network_mode": "bridge",
+      "ports": [
+        "127.0.0.1:9443:9443"
+      ],
+      "volumes": [
+        "/var/run/docker.sock:/var/run/docker.sock",
+        "portainer_data:/data",
+        "/data/docker-health/releases/d60ebf9e890ea3c8d27aff7e731324f610c090f6/probe-linux-amd64:/opt/container-health/probe:ro"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "/opt/container-health/probe",
+          "https-local",
+          "https://127.0.0.1:9443/api/system/status"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "start_period": "30s",
+        "retries": 3
+      }
+    }
+  },
+  "volumes": {
+    "portainer_data": {
+      "external": true
+    }
+  }
+}
