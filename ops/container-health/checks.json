@@ -61,9 +61,9 @@
   "pgadmin-web": {
     "test": [
       "CMD",
-      "/opt/container-health/probe",
-      "http",
-      "http://127.0.0.1:80/misc/ping"
+      "python3",
+      "-c",
+      "import urllib.request; assert urllib.request.urlopen('http://127.0.0.1:80/misc/ping', timeout=5).status == 200"
     ]
   },
   "php-nginx-app": {
@@ -109,7 +109,7 @@
   "nginx": {
     "test": [
       "CMD-SHELL",
-      "nginx -t -q && curl --fail --silent --max-time 5 --output /dev/null http://127.0.0.1/"
+      "nginx -t -q && curl --noproxy '*' --resolve admin-findme.snuday.com:443:127.0.0.1 --fail --silent --max-time 5 --output /dev/null https://admin-findme.snuday.com/"
     ]
   },
   "portainer": {
