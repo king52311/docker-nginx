@@ -21,6 +21,10 @@ python3 apply.py --binary /data/docker-health/releases/<commit>/probe-linux-amd6
 
 工具保留当前不可变镜像 ID、挂载源（包括匿名卷）、端口、资源限制、环境变量、网络别名、静态地址与重启策略。健康探针通过只读运行产物挂载注入；应用配置来自已推送 Git。重建时短暂停止旧容器，失败恢复；单实例数据库与代理安排维护窗口。通过后移除旧容器。原始 inspect 包含凭据，只保存在服务器 `/data/docker-health/backups/`（0700/0600），绝不提交 Git 或打印。
 
-Docker 原生健康检查每 30 秒执行，超时 10 秒，3 次失败标记 unhealthy；它不会自动重启不健康容器或发送通知。正常重启保留检查；其他 Compose/Portainer **重新创建**容器会使用其自身配置，因此每次重新创建后需从本目录重新运行 `apply.py --apply`。部署单由本工具维护，不能把此前遗留的线上运行配置差异当作本次业务源码发布。
+Docker 原生健康检查每 30 秒执行，超时 10 秒，3 次失败标记 unhealthy；它不会自动重启不健康容器或发送通知。正常重启保留检查；FindMe 已在发布 Compose 直接保存网关/worker 检查，其余受管 Compose 项目新增 `docker-compose.override.yml`，默认重建自动保留；显式 `-f` 时须同时指定覆盖文件。Portainer 和原始部署目录已缺失的旧 ASP 容器由本工具管理，其手工重新创建后需重新运行 `apply.py --apply`。部署单由本工具维护，不能把此前遗留的线上运行配置差异当作本次业务源码发布。
 
 FindMe `.deploy/` 中入口/worker 容器 ID 是部署凭据。应用后必须根据经过健康验证的新容器更新对应 ID，镜像/提交标记保持。线上已有配置、证书和任务状态不覆盖，不触发业务镜像重建。
+
+## 已验收
+
+2026-11-17：21/21 容器全部 running/healthy；17 项新增探针预检、3 项单元测试、真实 Docker 匿名卷保留/失败回退验证通过。17 个容器仅改健康配置，其不可变业务镜像 ID 和原挂载保留，原有 4 个健康容器保持。服务器 Nginx 的既有配置/证书差异已私有备份，未覆盖。验收 `/data/docker-health/acceptance-20261117.json`，私有回退记录 `/data/docker-health/backups/`。

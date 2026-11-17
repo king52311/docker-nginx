@@ -1,0 +1,16 @@
+{
+  "services": {
+    "nginx": {
+      "healthcheck": {
+        "test": [
+          "CMD-SHELL",
+          "nginx -t -q && curl --noproxy '*' --resolve admin-findme.snuday.com:443:127.0.0.1 --fail --silent --max-time 5 --output /dev/null https://admin-findme.snuday.com/"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "start_period": "30s",
+        "retries": 3
+      }
+    }
+  }
+}
